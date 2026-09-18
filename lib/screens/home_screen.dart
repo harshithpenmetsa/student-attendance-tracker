@@ -1,9 +1,38 @@
 import 'package:flutter/material.dart';
+import '../models/student.dart';
 import '../widgets/attendance_card.dart';
 import 'student_list_screen.dart';
+import 'attendance_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final List<Student> students = [];
+
+  Future<void> openStudentList() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StudentListScreen(students: students),
+      ),
+    );
+
+    setState(() {});
+  }
+
+  void openAttendanceScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AttendanceScreen(students: students),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +65,9 @@ class HomeScreen extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: const AttendanceCard(
+                  child: AttendanceCard(
                     title: 'Total Students',
-                    value: '0',
+                    value: '${students.length}',
                     icon: Icons.people,
                   ),
                 ),
@@ -91,14 +120,7 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const StudentListScreen(),
-                    ),
-                  );
-                },
+                onPressed: openStudentList,
                 icon: const Icon(Icons.person_add),
                 label: const Text('Add Student'),
               ),
@@ -109,7 +131,7 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: openAttendanceScreen,
                 icon: const Icon(Icons.fact_check),
                 label: const Text('Mark Attendance'),
               ),

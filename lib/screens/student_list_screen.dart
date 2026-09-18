@@ -3,15 +3,15 @@ import '../models/student.dart';
 import 'add_student_screen.dart';
 
 class StudentListScreen extends StatefulWidget {
-  const StudentListScreen({super.key});
+  final List<Student> students;
+
+  const StudentListScreen({super.key, required this.students});
 
   @override
   State<StudentListScreen> createState() => _StudentListScreenState();
 }
 
 class _StudentListScreenState extends State<StudentListScreen> {
-  final List<Student> students = [];
-
   Future<void> openAddStudentScreen() async {
     final Student? newStudent = await Navigator.push<Student>(
       context,
@@ -20,7 +20,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
     if (newStudent != null) {
       setState(() {
-        students.add(newStudent);
+        widget.students.add(newStudent);
       });
     }
   }
@@ -29,11 +29,11 @@ class _StudentListScreenState extends State<StudentListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Students (${students.length})'),
+        title: Text('Students (${widget.students.length})'),
         centerTitle: true,
       ),
 
-      body: students.isEmpty
+      body: widget.students.isEmpty
           ? const Center(
               child: Text(
                 'No students added yet.',
@@ -42,9 +42,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
             )
           : ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: students.length,
+              itemCount: widget.students.length,
               itemBuilder: (context, index) {
-                final student = students[index];
+                final student = widget.students[index];
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
