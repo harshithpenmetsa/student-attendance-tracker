@@ -31,7 +31,49 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(
         builder: (context) => AttendanceScreen(students: students),
       ),
-    );
+    ).then((_) {
+      setState(() {});
+    });
+  }
+
+  int get presentToday {
+    int count = 0;
+
+    for (final student in students) {
+      if (student.presentDays > 0) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  int get absentToday {
+    int count = 0;
+
+    for (final student in students) {
+      if (student.absentDays > 0) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  double get overallAttendance {
+    int totalPresent = 0;
+    int totalDays = 0;
+
+    for (final student in students) {
+      totalPresent += student.presentDays;
+      totalDays += student.totalDays;
+    }
+
+    if (totalDays == 0) {
+      return 0;
+    }
+
+    return (totalPresent / totalDays) * 100;
   }
 
   @override
@@ -75,9 +117,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 12),
 
                 Expanded(
-                  child: const AttendanceCard(
+                  child: AttendanceCard(
                     title: 'Present Today',
-                    value: '0',
+                    value: '$presentToday',
                     icon: Icons.check_circle,
                   ),
                 ),
@@ -89,9 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 Expanded(
-                  child: const AttendanceCard(
+                  child: AttendanceCard(
                     title: 'Absent Today',
-                    value: '0',
+                    value: '$absentToday',
                     icon: Icons.cancel,
                   ),
                 ),
@@ -99,9 +141,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 12),
 
                 Expanded(
-                  child: const AttendanceCard(
+                  child: AttendanceCard(
                     title: 'Attendance',
-                    value: '0%',
+                    value: '${overallAttendance.toStringAsFixed(1)}%',
                     icon: Icons.bar_chart,
                   ),
                 ),

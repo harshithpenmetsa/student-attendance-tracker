@@ -2,8 +2,9 @@ class Student {
   final int id;
   final String name;
   final String rollNumber;
-  final int presentDays;
-  final int absentDays;
+
+  int presentDays;
+  int absentDays;
 
   Student({
     required this.id,

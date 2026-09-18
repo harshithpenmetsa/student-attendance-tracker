@@ -13,9 +13,27 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen> {
   final Map<int, bool> attendance = {};
 
-  void markAttendance(int studentId, bool isPresent) {
+  void markAttendance(Student student, bool isPresent) {
     setState(() {
-      attendance[studentId] = isPresent;
+      // If attendance was already marked today,
+      // remove the previous count before adding the new one.
+      if (attendance.containsKey(student.id)) {
+        final previousStatus = attendance[student.id]!;
+
+        if (previousStatus) {
+          student.presentDays--;
+        } else {
+          student.absentDays--;
+        }
+      }
+
+      attendance[student.id] = isPresent;
+
+      if (isPresent) {
+        student.presentDays++;
+      } else {
+        student.absentDays++;
+      }
     });
   }
 
@@ -73,6 +91,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     ? 'Present'
                                     : 'Absent',
                               ),
+
+                              const SizedBox(height: 4),
+
+                              Text(
+                                'Attendance: '
+                                '${student.attendancePercentage.toStringAsFixed(1)}%',
+                              ),
                             ],
                           ),
                         ),
@@ -81,7 +106,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           children: [
                             IconButton(
                               onPressed: () {
-                                markAttendance(student.id, true);
+                                markAttendance(student, true);
                               },
                               icon: const Icon(Icons.check),
                               tooltip: 'Present',
@@ -89,7 +114,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
                             IconButton(
                               onPressed: () {
-                                markAttendance(student.id, false);
+                                markAttendance(student, false);
                               },
                               icon: const Icon(Icons.close),
                               tooltip: 'Absent',
