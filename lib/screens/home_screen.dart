@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/attendance_card.dart';
+import 'student_list_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -90,7 +91,14 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const StudentListScreen(),
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.person_add),
                 label: const Text('Add Student'),
               ),
