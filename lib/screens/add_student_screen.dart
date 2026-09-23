@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/student.dart';
 
 class AddStudentScreen extends StatefulWidget {
-  const AddStudentScreen({super.key});
+  final Student? student;
+
+  const AddStudentScreen({super.key, this.student});
 
   @override
   State<AddStudentScreen> createState() => _AddStudentScreenState();
@@ -11,6 +13,18 @@ class AddStudentScreen extends StatefulWidget {
 class _AddStudentScreenState extends State<AddStudentScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController rollNumberController = TextEditingController();
+
+  bool get isEditing => widget.student != null;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.student != null) {
+      nameController.text = widget.student!.name;
+      rollNumberController.text = widget.student!.rollNumber;
+    }
+  }
 
   @override
   void dispose() {
@@ -32,19 +46,29 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
       return;
     }
 
-    final student = Student(
-      id: DateTime.now().millisecondsSinceEpoch,
-      name: name,
-      rollNumber: rollNumber,
-    );
+    if (isEditing) {
+      widget.student!.name = name;
+      widget.student!.rollNumber = rollNumber;
 
-    Navigator.pop(context, student);
+      Navigator.pop(context, widget.student);
+    } else {
+      final student = Student(
+        id: DateTime.now().millisecondsSinceEpoch,
+        name: name,
+        rollNumber: rollNumber,
+      );
+
+      Navigator.pop(context, student);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Student'), centerTitle: true),
+      appBar: AppBar(
+        title: Text(isEditing ? 'Edit Student' : 'Add Student'),
+        centerTitle: true,
+      ),
 
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -52,9 +76,9 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Student Details',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              isEditing ? 'Edit Student Details' : 'Student Details',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 24),
@@ -88,8 +112,8 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
               height: 50,
               child: ElevatedButton.icon(
                 onPressed: saveStudent,
-                icon: const Icon(Icons.save),
-                label: const Text('Add Student'),
+                icon: Icon(isEditing ? Icons.update : Icons.save),
+                label: Text(isEditing ? 'Update Student' : 'Add Student'),
               ),
             ),
           ],

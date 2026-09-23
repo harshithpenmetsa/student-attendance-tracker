@@ -26,6 +26,56 @@ class _StudentListScreenState extends State<StudentListScreen> {
     }
   }
 
+  Future<void> editStudent(Student student) async {
+    final Student? updatedStudent = await Navigator.push<Student>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddStudentScreen(student: student),
+      ),
+    );
+
+    if (updatedStudent != null) {
+      setState(() {});
+    }
+  }
+
+  Future<void> deleteStudent(Student student) async {
+    final bool? shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Student'),
+          content: Text('Are you sure you want to delete ${student.name}?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: const Text('Cancel'),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete == true) {
+      setState(() {
+        widget.students.remove(student);
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${student.name} deleted')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,10 +85,31 @@ class _StudentListScreenState extends State<StudentListScreen> {
       ),
 
       body: widget.students.isEmpty
-          ? const Center(
-              child: Text(
-                'No students added yet.',
-                style: TextStyle(fontSize: 18),
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.people_outline, size: 70),
+
+                  const SizedBox(height: 16),
+
+                  const Text(
+                    'No students added yet.',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  const Text('Tap the + button to add a student.'),
+
+                  const SizedBox(height: 20),
+
+                  ElevatedButton.icon(
+                    onPressed: openAddStudentScreen,
+                    icon: const Icon(Icons.person_add),
+                    label: const Text('Add Student'),
+                  ),
+                ],
               ),
             )
           : ListView.builder(
@@ -59,7 +130,6 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
                     subtitle: Text('Roll Number: ${student.rollNumber}'),
 
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 18),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -71,6 +141,40 @@ class _StudentListScreenState extends State<StudentListScreen> {
                         setState(() {});
                       });
                     },
+
+                    trailing: PopupMenuButton<String>(
+                      onSelected: (value) {
+                        if (value == 'edit') {
+                          editStudent(student);
+                        } else if (value == 'delete') {
+                          deleteStudent(student);
+                        }
+                      },
+
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit),
+                              SizedBox(width: 10),
+                              Text('Edit'),
+                            ],
+                          ),
+                        ),
+
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete),
+                              SizedBox(width: 10),
+                              Text('Delete'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

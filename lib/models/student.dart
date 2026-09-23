@@ -1,7 +1,7 @@
 class Student {
   final int id;
-  final String name;
-  final String rollNumber;
+  String name;
+  String rollNumber;
 
   int presentDays;
   int absentDays;
