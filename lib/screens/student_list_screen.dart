@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/student.dart';
 import 'add_student_screen.dart';
+import 'student_details_screen.dart';
 
 class StudentListScreen extends StatefulWidget {
   final List<Student> students;
@@ -59,6 +60,17 @@ class _StudentListScreenState extends State<StudentListScreen> {
                     subtitle: Text('Roll Number: ${student.rollNumber}'),
 
                     trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              StudentDetailsScreen(student: student),
+                        ),
+                      ).then((_) {
+                        setState(() {});
+                      });
+                    },
                   ),
                 );
               },
