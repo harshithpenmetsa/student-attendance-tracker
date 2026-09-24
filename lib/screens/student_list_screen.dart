@@ -77,6 +77,10 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
       await StorageService.saveStudents(widget.students);
 
+      if (!mounted) {
+        return;
+      }
+
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('${student.name} deleted')));
