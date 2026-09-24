@@ -111,8 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,12 +124,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 8),
 
-            const Text(
+            Text(
               'Track your class attendance easily.',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
             ),
 
             const SizedBox(height: 24),
+
+            const Text(
+              'Attendance Overview',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 12),
 
             Row(
               children: [
@@ -188,23 +195,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
             SizedBox(
               width: double.infinity,
+              height: 52,
               child: ElevatedButton.icon(
                 onPressed: openStudentList,
                 icon: const Icon(Icons.people),
-                label: const Text('Manage Students'),
+                label: const Text(
+                  'Manage Students',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
 
             SizedBox(
               width: double.infinity,
+              height: 52,
               child: ElevatedButton.icon(
                 onPressed: openAttendanceScreen,
                 icon: const Icon(Icons.fact_check),
-                label: const Text('Mark Attendance'),
+                label: const Text(
+                  'Mark Attendance',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             ),
+
+            const SizedBox(height: 20),
           ],
         ),
       ),
