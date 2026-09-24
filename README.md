@@ -1,17 +1,57 @@
-# student_attendance_tracker
+# Student Attendance Tracker
 
-A new Flutter project.
+A Flutter-based student attendance management application that helps users manage students, mark attendance, and track attendance statistics.
 
-## Getting Started
+## 📌 About the Project
 
-This project is a starting point for a Flutter application.
+Student Attendance Tracker is a simple Flutter application designed to make student attendance management easier.
 
-A few resources to get you started if this is your first Flutter project:
+The application allows users to add students, edit student information, delete students, mark attendance, and view individual attendance details. Student and attendance data are stored locally so that the data remains available after restarting the application.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## ✨ Features
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- 👨‍🎓 Add students
+- ✏️ Edit student information
+- 🗑️ Delete students
+- 👤 View student details
+- ✅ Mark students as Present
+- ❌ Mark students as Absent
+- 📊 Calculate attendance percentage
+- 📈 View overall attendance statistics
+- 💾 Store student data locally
+- 🔄 Restore data after application restart
+- 🚫 Prevent duplicate attendance counting
+- 📱 Clean and responsive user interface
+
+## 🛠️ Technologies Used
+
+- Flutter
+- Dart
+- Material Design
+- SharedPreferences
+- Git
+- GitHub
+- Visual Studio Code
+
+## 📂 Project Structure
+
+```text
+lib/
+│
+├── main.dart
+│
+├── models/
+│   └── student.dart
+│
+├── screens/
+│   ├── home_screen.dart
+│   ├── student_list_screen.dart
+│   ├── add_student_screen.dart
+│   ├── student_details_screen.dart
+│   └── attendance_screen.dart
+│
+├── services/
+│   └── storage_service.dart
+│
+└── widgets/
+    └── attendance_card.dart
