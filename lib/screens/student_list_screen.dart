@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../models/student.dart';
+import '../services/storage_service.dart';
 import 'add_student_screen.dart';
 import 'student_details_screen.dart';
 
@@ -23,6 +25,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
       setState(() {
         widget.students.add(newStudent);
       });
+
+      await StorageService.saveStudents(widget.students);
     }
   }
 
@@ -36,6 +40,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
     if (updatedStudent != null) {
       setState(() {});
+
+      await StorageService.saveStudents(widget.students);
     }
   }
 
@@ -53,7 +59,6 @@ class _StudentListScreenState extends State<StudentListScreen> {
               },
               child: const Text('Cancel'),
             ),
-
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context, true);
@@ -69,6 +74,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
       setState(() {
         widget.students.remove(student);
       });
+
+      await StorageService.saveStudents(widget.students);
 
       ScaffoldMessenger.of(
         context,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+
 import '../models/student.dart';
+import '../services/storage_service.dart';
 import '../widgets/attendance_card.dart';
-import 'student_list_screen.dart';
 import 'attendance_screen.dart';
+import 'student_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,7 +14,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Student> students = [];
+  List<Student> students = [];
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadStudents();
+  }
+
+  Future<void> loadStudents() async {
+    final savedStudents = await StorageService.loadStudents();
+
+    setState(() {
+      students = savedStudents;
+      isLoading = false;
+    });
+  }
 
   Future<void> openStudentList() async {
     await Navigator.push(
@@ -22,18 +41,22 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
+    await StorageService.saveStudents(students);
+
     setState(() {});
   }
 
-  void openAttendanceScreen() {
-    Navigator.push(
+  Future<void> openAttendanceScreen() async {
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AttendanceScreen(students: students),
       ),
-    ).then((_) {
-      setState(() {});
-    });
+    );
+
+    await StorageService.saveStudents(students);
+
+    setState(() {});
   }
 
   int get presentToday {
@@ -78,6 +101,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Attendance Tracker'),
@@ -163,8 +190,8 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: openStudentList,
-                icon: const Icon(Icons.person_add),
-                label: const Text('Add Student'),
+                icon: const Icon(Icons.people),
+                label: const Text('Manage Students'),
               ),
             ),
 

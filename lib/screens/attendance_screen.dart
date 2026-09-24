@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../models/student.dart';
+import '../services/storage_service.dart';
 
 class AttendanceScreen extends StatefulWidget {
   final List<Student> students;
@@ -13,17 +15,16 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen> {
   final Map<int, bool> attendance = {};
 
-  void markAttendance(Student student, bool isPresent) {
+  Future<void> markAttendance(Student student, bool isPresent) async {
     final previousStatus = attendance[student.id];
 
-    // Prevent duplicate marking.
+    // Prevent duplicate attendance.
     if (previousStatus == isPresent) {
       return;
     }
 
     setState(() {
-      // If attendance was already marked,
-      // remove the previous count first.
+      // Remove the previous attendance count.
       if (previousStatus != null) {
         if (previousStatus) {
           student.presentDays--;
@@ -32,19 +33,24 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
       }
 
-      // Save the new attendance status.
+      // Store the new status.
       attendance[student.id] = isPresent;
 
-      // Add the new count.
+      // Add the new attendance count.
       if (isPresent) {
         student.presentDays++;
       } else {
         student.absentDays++;
       }
     });
+
+    // Save immediately after attendance changes.
+    await StorageService.saveStudents(widget.students);
   }
 
-  String getStatusText(bool? status) {
+  String getStatus(Student student) {
+    final status = attendance[student.id];
+
     if (status == null) {
       return 'Not Marked';
     }
@@ -52,12 +58,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     return status ? 'Present' : 'Absent';
   }
 
-  IconData getStatusIcon(bool? status) {
+  Color getStatusColor(Student student) {
+    final status = attendance[student.id];
+
     if (status == null) {
-      return Icons.help_outline;
+      return Colors.grey;
     }
 
-    return status ? Icons.check_circle : Icons.cancel;
+    return status ? Colors.green : Colors.red;
   }
 
   @override
@@ -77,13 +85,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               itemCount: widget.students.length,
               itemBuilder: (context, index) {
                 final student = widget.students[index];
+
                 final status = attendance[student.id];
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 14),
-
                   child: Padding(
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.all(16),
 
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,19 +116,34 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
                                   const SizedBox(height: 4),
 
-                                  Text(
-                                    student.rollNumber,
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
+                                  Text('Roll Number: ${student.rollNumber}'),
                                 ],
                               ),
                             ),
 
-                            _buildStatusBadge(status),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: getStatusColor(
+                                  student,
+                                ).withValues(alpha: 0.12),
+                              ),
+                              child: Text(
+                                getStatus(student),
+                                style: TextStyle(
+                                  color: getStatusColor(student),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
 
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 16),
 
                         Text(
                           'Attendance: '
@@ -134,29 +157,54 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           children: [
                             Expanded(
                               child: ElevatedButton.icon(
-                                onPressed: status == true
-                                    ? null
-                                    : () {
-                                        markAttendance(student, true);
-                                      },
+                                onPressed: () {
+                                  markAttendance(student, true);
+                                },
                                 icon: const Icon(Icons.check),
                                 label: const Text('Present'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: status == true
+                                      ? Colors.green
+                                      : null,
+                                  foregroundColor: status == true
+                                      ? Colors.white
+                                      : null,
+                                ),
                               ),
                             ),
 
-                            const SizedBox(width: 10),
+                            const SizedBox(width: 12),
 
                             Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: status == false
-                                    ? null
-                                    : () {
-                                        markAttendance(student, false);
-                                      },
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  markAttendance(student, false);
+                                },
                                 icon: const Icon(Icons.close),
                                 label: const Text('Absent'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: status == false
+                                      ? Colors.red
+                                      : null,
+                                  foregroundColor: status == false
+                                      ? Colors.white
+                                      : null,
+                                ),
                               ),
                             ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Present: ${student.presentDays}'),
+
+                            Text('Absent: ${student.absentDays}'),
+
+                            Text('Total: ${student.totalDays}'),
                           ],
                         ),
                       ],
@@ -165,28 +213,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 );
               },
             ),
-    );
-  }
-
-  Widget _buildStatusBadge(bool? status) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(getStatusIcon(status), size: 18),
-
-          const SizedBox(width: 5),
-
-          Text(
-            getStatusText(status),
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
     );
   }
 }
