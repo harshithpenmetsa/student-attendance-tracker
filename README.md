@@ -55,3 +55,15 @@ lib/
 │
 └── widgets/
     └── attendance_card.dart
+
+
+## Project Implementation
+
+<img width="396" height="766" alt="image" src="https://github.com/user-attachments/assets/8d57680f-b745-44d8-aad5-cede510d8141" />
+
+
+### Student Model
+
+The `Student` class is used to store the details of each student in the application. It contains the student's ID, name, roll number, present days and absent days.
+
+It also calculates the total number of attendance days and the attendance percentage. The `toMap()` and `fromMap()` methods are used to convert the student data so that it can be saved and loaded from local storage.
