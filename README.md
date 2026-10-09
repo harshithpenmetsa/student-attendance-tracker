@@ -2,28 +2,28 @@
 
 A Flutter-based student attendance management application that helps users manage students, mark attendance, and track attendance statistics.
 
-## 📌 About the Project
+## About the Project
 
 Student Attendance Tracker is a simple Flutter application designed to make student attendance management easier.
 
 The application allows users to add students, edit student information, delete students, mark attendance, and view individual attendance details. Student and attendance data are stored locally so that the data remains available after restarting the application.
 
-## ✨ Features
+## Features
 
-- 👨‍🎓 Add students
-- ✏️ Edit student information
-- 🗑️ Delete students
-- 👤 View student details
-- ✅ Mark students as Present
-- ❌ Mark students as Absent
-- 📊 Calculate attendance percentage
-- 📈 View overall attendance statistics
-- 💾 Store student data locally
-- 🔄 Restore data after application restart
-- 🚫 Prevent duplicate attendance counting
-- 📱 Clean and responsive user interface
+- Add students
+- Edit student information
+- Delete students
+- View student details
+- Mark students as Present
+- Mark students as Absent
+- Calculate attendance percentage
+- View overall attendance statistics
+- Store student data locally
+- Restore data after application restart
+- Prevent duplicate attendance counting
+- Clean and responsive user interface
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - Flutter
 - Dart
@@ -33,7 +33,7 @@ The application allows users to add students, edit student information, delete s
 - GitHub
 - Visual Studio Code
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 lib/
